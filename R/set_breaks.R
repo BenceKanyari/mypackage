@@ -28,7 +28,7 @@ set_breaks <- function(values, breaks = TRUE, top_ratio = 1, seq_length = NULL, 
     if (is.null(seq_length)) {
         my_length <- c(.1, .2, .5, 1, 2, 4, 5, 8, 10, 15, 20, 25, 30, 40, 50, 100,
                        200, 250, 500, 1000, 2e3, 2.5e3, 3e3, 4e3, 5e3, 1e4, 2e4, 2.5e4,
-                       3e4, 4e4, 5e4, 1e5, 2e5, 5e5, 1e6)
+                       3e4, 4e4, 5e4, 1e5, 2e5, 5e5, 1e6, 1e7, 1e8, 1e9, 1e10)
 
         diff <- (max_n - min_n) / max_n_breaks  - my_length
 

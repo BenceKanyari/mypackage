@@ -30,6 +30,27 @@ my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
 }
 
 
+.freq_recognition <- function(x) {
+    items <- sort(unique(x)) |>
+        head(20) # should be enough, but many tests
+
+    Ds <- base::diff(items) # Time differences in days
+
+    recognised_freq <- dplyr::case_when(
+        all(Ds >= 1 & Ds <= 4) ~ "daily",
+        all(Ds >= 360 & Ds <= 370) ~ "annual",
+        all(Ds >= 28 & Ds <= 32) ~ "monthly",
+        all(Ds >= 84 & Ds <= 93) ~ "quarterly",
+        all(Ds >= 6 & Ds <= 8) ~ "weekly",
+        all(Ds >= 12 & Ds <= 16) ~ "biweekly", # unpausables
+        all(Ds >= 56 & Ds <= 64) ~ "bimonthly",
+        all(Ds >= 180 & Ds <= 184) ~ "biannual",
+        .default = "annual"
+    )
+
+    recognised_freq
+}
+
 
 #' @rdname my_theme
 #' @export
@@ -317,23 +338,73 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
         }else if(date_x){
 
-            plot0 <- ggplot2::ggplot_build(plot + scale_x_continuous(expand = c(0,0)))
+            plot0 <- ggplot2::ggplot_build(plot)
 
-            x_range <- plot0$layout$panel_params[[1]]$x.range
+            x_time <- unique(plot0$data[[1]]$x)
 
-            x_diff <- diff(x_range)
+            x_time <- sort(as.Date(x_time))
 
-            date_breaks <- case_when(
-                x_diff <= 366*10 ~ "-1 years",
-                x_diff <= 366*20 ~ "-2 years",
-                x_diff <= 366*50 ~ "-5 years",
-                .default = "-10 years"
+
+            # Detect frequency (assuming you have a helper like .freq_recognition)
+            freq <- .freq_recognition(x_time)
+
+            freq_n <- case_when(
+                freq == "daily" ~ 1,
+                freq == "weekly" ~ 2,
+                freq == "biweekly" ~ 3,
+                freq == "monthly" ~ 4,
+                freq == "bimonthly" ~ 5,
+                freq == "quarterly" ~ 6,
+                freq == "biannual" ~ 7,
+                .default = 8
             )
+
+            # Years covered
+            years_covered <- as.numeric(difftime(max(x_time), min(x_time), units = "days")) / 365
+
+
+            by <- case_when(
+                years_covered >= 50 ~ "10 years",
+                years_covered >= 20 ~ "5 years",
+                years_covered >= 10 ~ "2 years",
+                years_covered >= 5 ~ "1 year",
+
+                years_covered < .02 & freq_n <= 1 ~ "1 day",
+                years_covered < .18 & freq_n <= 2 ~ "1 week",
+                years_covered < .8 & freq_n <= 4 ~ "1 month",
+                years_covered < 1.6 & freq_n <= 5 ~ "2 months",
+                years_covered < 2.4 & freq_n <= 6 & freq != 5 ~ "3 months",
+                freq_n <= 7 ~ "6 months",
+            )
+
+
+            # Compute breaks
+            x_breaks <- seq(from = as.Date(max(x_time)), to = as.Date(min(x_time)), by = paste0("-",by))
+
+            # Avoid too fine breaks for coarser frequencies
+            if (str_detect(by, "year")) {
+                x_breaks <- unique(as.Date(paste0(format(x_breaks, "%Y"), "-01-01")))
+            }
+
+
+            if (by %in% c("1 day", "1 week")) {
+                x_labels <- format(x_breaks, "%d %b")
+            } else if (by %in% c("1 month", "2 months")) {
+                x_labels <- format(x_breaks, "%b %y")
+            } else if (by %in% c("3 months", "6 months") & freq == "monthly") {
+                x_labels <- format(x_breaks, "%b %y")
+            } else if (by %in% c("3 months", "6 months") & freq == "quarterly") {
+                x_labels <- paste0(format(x_breaks, "%y"), "-Q", ceiling(as.numeric(format(x_breaks, "%m")) / 3))
+            } else if (by == "6 months" & freq == "biannual") {
+                x_labels <- paste0(format(x_breaks, "%y"), "-S", ceiling(as.numeric(format(x_breaks, "%m")) / 6))
+            } else {
+                x_labels <- format(x_breaks, "%Y")
+            }
 
             plot_out <- plot_out +
                 scale_x_date(
-                    breaks = seq.Date(floor_date(as.Date(x_range[2]), "years"), as.Date(x_range[1]), by = date_breaks),
-                    date_labels = "%Y",
+                    breaks = x_breaks,
+                    labels = x_labels,
                     expand = expansion(mult = c(0.01, 0.01))
                 )
 
