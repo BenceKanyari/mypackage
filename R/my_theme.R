@@ -154,6 +154,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                     panel.spacing.x = unit(40, "pt"),
                     panel.spacing.y = unit(20, "pt"),
                 ) +
+                scale_y_discrete(expand = expansion(add = .5)) +
                 ggh4x::facetted_pos_scales(x = scales)
 
         }else{
@@ -176,6 +177,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                     panel.spacing.x = unit(40, "pt"),
                     panel.spacing.y = unit(20, "pt"),
                 ) +
+                scale_y_discrete(expand = expansion(add = .5)) +
                 scale_x_continuous(
                     sec.axis = dup_axis(),
                     limits = limits_x,
@@ -256,8 +258,8 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         if (plot0$layout$panel_params[[1]]$x$is_discrete()) {
 
             plot_out <- plot_out +
-                scale_x_continuous(
-                    expand = expansion(mult = c(0.01, 0.01))
+                scale_x_discrete(
+                    expand = expansion(add = .5)
                 )
 
         }else if (cont_x) {
