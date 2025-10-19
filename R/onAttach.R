@@ -1,0 +1,52 @@
+
+.onAttach <- function(...) {
+
+
+    red_palette <- c("#E22222", "#550F13FF", "#A10000", "grey55", "#C0C0C0", "#3D5481", "#A3C1E1", "#303030", "#F28E8E", "grey35")
+
+    ggplot2::update_geom_defaults("point", list(size = 1.6, color = red_palette[1]))
+    ggplot2::update_geom_defaults("line", list(linewidth = 1, color = red_palette[1]))
+    ggplot2::update_geom_defaults("tile", list(color = "black"))
+    ggplot2::update_geom_defaults("col", list(fill = red_palette[1]))
+    options(ggplot2.discrete.colour = red_palette)
+    options(ggplot2.discrete.fill = red_palette)
+
+    ggplot2::theme_set(
+        ggthemes::theme_calc() +
+            ggplot2::theme(
+                line = ggplot2::element_line(linetype = 1, colour = "black"),
+                rect = ggplot2::element_rect(fill = "white", linetype = 0, colour = NA),
+                text = ggplot2::element_text(colour = "black"),
+                title = ggplot2::element_text(size = ggplot2::rel(2)),
+                panel.background = ggplot2::element_rect(fill = "white", colour = NA),
+                plot.background = ggplot2::element_rect(fill = "white", colour = NA),
+                panel.grid = ggplot2::element_blank(),
+                panel.spacing.x = ggplot2::unit(25, "pt"),
+                panel.spacing.y = ggplot2::unit(10, "pt"),
+                plot.margin = ggplot2::unit(c(.5, .5, .5, .5), "lines"),
+                axis.title = ggplot2::element_blank(),
+                axis.text = ggplot2::element_text(face = "bold", size = 12),
+                axis.line = ggplot2::element_line(),
+                axis.line.y = ggplot2::element_line(),
+                legend.position = "top",
+                legend.direction = "horizontal",
+                legend.box = "horizontal",
+                legend.background = ggplot2::element_rect(fill = NA, colour = NA),
+                legend.box.margin = ggplot2::unit(c(0, 1, -.5, 1), "lines"),
+                legend.justification = "left",
+                legend.text = ggplot2::element_text(size = 12),
+                legend.title = ggplot2::element_blank(),
+                strip.background = ggplot2::element_blank(),
+                strip.placement = "outside",
+                strip.text = ggplot2::element_text(color = "black", size = 14, face = "bold"),
+                plot.title = ggplot2::element_text(hjust = .5, face = "bold", size = 16),
+                plot.subtitle = ggplot2::element_text(size = 14, hjust = .5, margin = ggplot2::margin(1, 3, 10, 3)),
+                plot.caption = ggplot2::element_text(hjust = 0, size = 8),
+                plot.caption.position = "plot",
+                plot.title.position = "plot"
+            )
+    )
+
+    packageStartupMessage("Theme updated")
+}
+
