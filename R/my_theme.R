@@ -339,7 +339,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
             plot0 <- ggplot2::ggplot_build(plot)
 
-            x_time <- unique(plot0$data[[1]]$x)
+            x_time <- unique(unlist(lapply(plot0$data, function(d) d$x)))
 
             x_time <- sort(as.Date(x_time))
 
