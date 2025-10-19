@@ -56,7 +56,15 @@ my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
 #' @export
 #' @importFrom ggplot2 ggplot_add
 #' @importFrom ggh4x facetted_pos_scales
-#' @import tidyverse
+#' @import dplyr
+#' @import forcats
+#' @import ggplot2
+#' @import lubridate
+#' @import purrr
+#' @import readr
+#' @import stringr
+#' @import tibble
+#' @import tidyr
 #' @method ggplot_add my_theme
 ggplot_add.my_theme <- function(object, plot, object_name) {
     top_ratio <- object$top_ratio
