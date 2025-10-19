@@ -127,22 +127,20 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             scales <- vector("list", n_panels)
 
 
-            if (zero_x_min) {
-                for (i in seq_len(n_panels)) {
-                    yr <- plot0$layout$panel_params[[i]]$x.range
+            for (i in seq_len(n_panels)) {
+                xr <- plot0$layout$panel_params[[i]]$x.range
+
+                if (zero_x_min & min(xr) >= 0) {
                     scales[[i]] <- scale_x_continuous(
-                        limits = c(0,set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
-                        breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = c(0,set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
+                        breaks = set_breaks(xr, breaks = TRUE, max_n_breaks = max_n_breaks),
                         expand = c(0, 0),
                         sec.axis = dup_axis()
                     )
-                }
-            }else{
-                for (i in seq_len(n_panels)) {
-                    yr <- plot0$layout$panel_params[[i]]$x.range
+                } else{
                     scales[[i]] <- scale_x_continuous(
-                        limits = set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks),
-                        breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks),
+                        breaks = set_breaks(xr, breaks = TRUE, max_n_breaks = max_n_breaks),
                         expand = c(0, 0),
                         sec.axis = dup_axis()
                     )
@@ -161,7 +159,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         }else{
             x_range <- plot0$layout$panel_params[[1]]$x.range
 
-            if (zero_x_min) {
+            if (zero_x_min & min(x_range) >= 0) {
                 limits_x <- c(0,set_breaks(x_range, breaks = FALSE,
                                            top_ratio = top_ratio, max_n_breaks = n_breaks)[2])
             }else{
