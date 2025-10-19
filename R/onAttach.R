@@ -1,15 +1,12 @@
 
 .onAttach <- function(...) {
 
-
-    red_palette <- c("#E22222", "#550F13FF", "#A10000", "grey55", "#C0C0C0", "#3D5481", "#A3C1E1", "#303030", "#F28E8E", "grey35")
-
-    ggplot2::update_geom_defaults("point", list(size = 1.6, color = red_palette[1]))
-    ggplot2::update_geom_defaults("line", list(linewidth = 1, color = red_palette[1]))
+    ggplot2::update_geom_defaults("point", list(size = 1.6, color = my_colors(1)))
+    ggplot2::update_geom_defaults("line", list(linewidth = 1, color = my_colors(1)))
     ggplot2::update_geom_defaults("tile", list(color = "black"))
-    ggplot2::update_geom_defaults("col", list(fill = red_palette[1]))
-    options(ggplot2.discrete.colour = red_palette)
-    options(ggplot2.discrete.fill = red_palette)
+    ggplot2::update_geom_defaults("col", list(fill = my_colors(1)))
+    options(ggplot2.discrete.colour = my_colors(1:16))
+    options(ggplot2.discrete.fill = my_colors(1:16))
 
     ggplot2::theme_set(
         ggthemes::theme_calc() +
