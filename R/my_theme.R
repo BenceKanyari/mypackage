@@ -205,20 +205,17 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             n_panels <- length(plot0$layout$panel_params)
             scales <- vector("list", n_panels)
 
+            for (i in seq_len(n_panels)) {
+                yr <- plot0$layout$panel_params[[i]]$y.range
 
-            if (zero_y_min) {
-                for (i in seq_len(n_panels)) {
-                    yr <- plot0$layout$panel_params[[i]]$y.range
+                if (zero_y_min & min(yr) >= 0) {
                     scales[[i]] <- scale_y_continuous(
                         limits = c(0,set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
                         breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
                         expand = c(0, 0),
                         sec.axis = dup_axis()
                     )
-                }
-            }else{
-                for (i in seq_len(n_panels)) {
-                    yr <- plot0$layout$panel_params[[i]]$y.range
+                } else{
                     scales[[i]] <- scale_y_continuous(
                         limits = set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks),
                         breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
@@ -235,7 +232,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         }else{
             y_range <- plot0$layout$panel_params[[1]]$y.range
 
-            if (zero_y_min) {
+            if (zero_y_min & min(y_range) >= 0) {
                 limits_y <- c(0,set_breaks(y_range, breaks = FALSE,
                                            top_ratio = top_ratio, max_n_breaks = n_breaks)[2])
             }else{
