@@ -363,13 +363,13 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 years_covered >= 50 ~ "10 years",
                 years_covered >= 20 ~ "5 years",
                 years_covered >= 10 ~ "2 years",
-                years_covered >= 5 ~ "1 year",
+                years_covered >= 4 ~ "1 year",
 
                 years_covered < .02 & freq_n <= 1 ~ "1 day",
                 years_covered < .18 & freq_n <= 2 ~ "1 week",
-                years_covered < .8 & freq_n <= 4 ~ "1 month",
-                years_covered < 1.6 & freq_n <= 5 ~ "2 months",
-                years_covered < 2.4 & freq_n <= 6 & freq != 5 ~ "3 months",
+                years_covered < .67 & freq_n <= 4 ~ "1 month",
+                years_covered < 1.34 & freq_n <= 5 ~ "2 months",
+                years_covered < 2 & freq_n <= 6 & freq != 5 ~ "3 months",
                 freq_n <= 7 ~ "6 months",
             )
 
