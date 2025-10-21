@@ -15,17 +15,19 @@
 #'   If NULL, the default is inferred based on the data type.
 #' @param cont_x logical. If TRUE, enforces continuous scaling and autoscaling for the x-axis.
 #' @param date_x logical. If TRUE, enforces date scaling by years for the x-axis.
+#' @param datetime_x logical. If TRUE, enforces datetime scaling by years for the x-axis.
 #' @param n_breaks integer. Approximate number of breaks to generate for axes.
 #'
 #' @return A `my_theme` object (a list with class `"my_theme"`) that can be added to a ggplot
 #'   object using the `+` operator.
 #' @export
 my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
-                     zero_x_min = NULL, cont_x = FALSE, date_x = FALSE,
-                     n_breaks = 16) {
+                     zero_x_min = NULL, cont_x = FALSE, date_x = FALSE, datetime_x = FALSE,
+                     n_breaks = 12) {
     structure(list(top_ratio = top_ratio, autoscale = autoscale,
                    zero_y_min = zero_y_min, zero_x_min = zero_x_min,
-                   cont_x = cont_x, date_x = date_x, n_breaks = n_breaks),
+                   cont_x = cont_x, date_x = date_x, datetime_x = datetime_x,
+                   n_breaks = n_breaks),
               class = "my_theme")
 }
 
@@ -37,7 +39,7 @@ my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
     Ds <- base::diff(items) # Time differences in days
 
     recognised_freq <- dplyr::case_when(
-        all(Ds >= 1 & Ds <= 4) ~ "daily",
+        all(Ds > 0 & Ds <= 4) ~ "daily",
         all(Ds >= 360 & Ds <= 370) ~ "annual",
         all(Ds >= 28 & Ds <= 32) ~ "monthly",
         all(Ds >= 84 & Ds <= 93) ~ "quarterly",
@@ -56,6 +58,7 @@ my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
 #' @export
 #' @importFrom ggplot2 ggplot_add
 #' @importFrom ggh4x facetted_pos_scales
+#' @importFrom lubridate as_datetime
 #' @method ggplot_add my_theme
 ggplot_add.my_theme <- function(object, plot, object_name) {
     top_ratio <- object$top_ratio
@@ -64,6 +67,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
     zero_x_min <- object$zero_x_min
     cont_x <- object$cont_x
     date_x <- object$date_x
+    datetime_x <- object$datetime_x
     n_breaks <- object$n_breaks
 
     # Base theme (always applied)
@@ -95,8 +99,8 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             strip.background = element_blank(),
             strip.placement = "outside",
             strip.text = element_text(color = "black", size = 14, face = "bold"),
-            plot.title = element_text(hjust = .5, face = "bold", size = 16),
-            plot.subtitle = element_text(size = 14, hjust = .5, margin = margin(1, 3, 10, 3)),
+            plot.title = element_text(hjust = .5, face = "bold", size = 16,  margin = margin(1, 1, 12, 1, "pt")),
+            plot.subtitle = element_text(size = 14, hjust = .5, margin = margin(-13, 3, 12, 3, "pt")),
             plot.caption = element_text(hjust = 0, size = 8),
             plot.caption.position = "plot",
             plot.title.position = "plot"
@@ -367,9 +371,9 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
                 years_covered < .02 & freq_n <= 1 ~ "1 day",
                 years_covered < .18 & freq_n <= 2 ~ "1 week",
-                years_covered < .8 & freq_n <= 4 ~ "1 month",
-                years_covered < 1.6 & freq_n <= 5 ~ "2 months",
-                years_covered < 2.4 & freq_n <= 6 & freq != 5 ~ "3 months",
+                years_covered < .67 & freq_n <= 4 ~ "1 month",
+                years_covered < 1.34 & freq_n <= 5 ~ "2 months",
+                years_covered < 2 & freq_n <= 6 & freq != 5 ~ "3 months",
                 freq_n <= 7 ~ "6 months",
             )
 
@@ -400,6 +404,78 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             plot_out <- plot_out +
                 scale_x_date(
                     breaks = x_breaks,
+                    labels = x_labels,
+                    expand = expansion(mult = c(0.01, 0.01))
+                )
+
+        }else if(datetime_x){
+
+            plot0 <- ggplot2::ggplot_build(plot)
+
+            x_time <- unique(unlist(lapply(plot0$data, function(d) d$x)))
+
+            x_time <- sort(lubridate::as_datetime(x_time))
+
+
+            # Detect frequency (assuming you have a helper like .freq_recognition)
+            freq <- .freq_recognition(x_time)
+
+            freq_n <- case_when(
+                freq == "daily" ~ 1,
+                freq == "weekly" ~ 2,
+                freq == "biweekly" ~ 3,
+                freq == "monthly" ~ 4,
+                freq == "bimonthly" ~ 5,
+                freq == "quarterly" ~ 6,
+                freq == "biannual" ~ 7,
+                .default = 8
+            )
+
+            # Years covered
+            years_covered <- as.numeric(difftime(max(x_time), min(x_time), units = "days")) / 365
+
+
+            by <- case_when(
+                years_covered >= 50 ~ "10 years",
+                years_covered >= 20 ~ "5 years",
+                years_covered >= 10 ~ "2 years",
+                years_covered >= 5 ~ "1 year",
+
+                years_covered < .02 & freq_n <= 1 ~ "1 day",
+                years_covered < .18 & freq_n <= 2 ~ "1 week",
+                years_covered < .67 & freq_n <= 4 ~ "1 month",
+                years_covered < 1.34 & freq_n <= 5 ~ "2 months",
+                years_covered < 2 & freq_n <= 6 & freq != 5 ~ "3 months",
+                freq_n <= 7 ~ "6 months",
+            )
+
+
+            # Compute breaks
+            x_breaks <- seq(from = as.Date(max(x_time)), to = as.Date(min(x_time)), by = paste0("-",by))
+
+            # Avoid too fine breaks for coarser frequencies
+            if (str_detect(by, "year")) {
+                x_breaks <- unique(as.Date(paste0(format(x_breaks, "%Y"), "-01-01")))
+            }
+
+
+            if (by %in% c("1 day", "1 week")) {
+                x_labels <- format(x_breaks, "%d %b")
+            } else if (by %in% c("1 month", "2 months")) {
+                x_labels <- format(x_breaks, "%b %y")
+            } else if (by %in% c("3 months", "6 months") & freq == "monthly") {
+                x_labels <- format(x_breaks, "%b %y")
+            } else if (by %in% c("3 months", "6 months") & freq == "quarterly") {
+                x_labels <- paste0(format(x_breaks, "%y"), "-Q", ceiling(as.numeric(format(x_breaks, "%m")) / 3))
+            } else if (by == "6 months" & freq == "biannual") {
+                x_labels <- paste0(format(x_breaks, "%y"), "-S", ceiling(as.numeric(format(x_breaks, "%m")) / 6))
+            } else {
+                x_labels <- format(x_breaks, "%Y")
+            }
+
+            plot_out <- plot_out +
+                scale_x_datetime(
+                    breaks = lubridate::as_datetime(x_breaks),
                     labels = x_labels,
                     expand = expansion(mult = c(0.01, 0.01))
                 )

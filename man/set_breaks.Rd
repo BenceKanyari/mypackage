@@ -9,7 +9,7 @@ set_breaks(
   breaks = TRUE,
   top_ratio = 1,
   seq_length = NULL,
-  max_n_breaks = 16
+  max_n_breaks = 12
 )
 }
 \arguments{

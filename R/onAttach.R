@@ -36,8 +36,8 @@
                 strip.background = ggplot2::element_blank(),
                 strip.placement = "outside",
                 strip.text = ggplot2::element_text(color = "black", size = 14, face = "bold"),
-                plot.title = ggplot2::element_text(hjust = .5, face = "bold", size = 16),
-                plot.subtitle = ggplot2::element_text(size = 14, hjust = .5, margin = ggplot2::margin(1, 3, 10, 3)),
+                plot.title = ggplot2::element_text(hjust = .5, face = "bold", size = 16, margin = ggplot2::margin(1, 1, 12, 1, "pt")),
+                plot.subtitle = ggplot2::element_text(size = 14, hjust = .5, margin = ggplot2::margin(-13, 3, 12, 3)),
                 plot.caption = ggplot2::element_text(hjust = 0, size = 8),
                 plot.caption.position = "plot",
                 plot.title.position = "plot"

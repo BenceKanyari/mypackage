@@ -17,7 +17,7 @@
 #'
 #' @export
 
-set_breaks <- function(values, breaks = TRUE, top_ratio = 1, seq_length = NULL, max_n_breaks = 16) {
+set_breaks <- function(values, breaks = TRUE, top_ratio = 1, seq_length = NULL, max_n_breaks = 12) {
 
     min_n <- min(values, na.rm = TRUE)-0.02
     max_n <- max(values, na.rm = TRUE)+0.02

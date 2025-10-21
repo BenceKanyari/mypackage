@@ -12,7 +12,8 @@ my_theme(
   zero_x_min = NULL,
   cont_x = FALSE,
   date_x = FALSE,
-  n_breaks = 16
+  datetime_x = FALSE,
+  n_breaks = 12
 )
 
 \method{ggplot_add}{my_theme}(object, plot, object_name)
@@ -32,6 +33,8 @@ If NULL, the default is inferred based on the data type.}
 \item{cont_x}{logical. If TRUE, enforces continuous scaling and autoscaling for the x-axis.}
 
 \item{date_x}{logical. If TRUE, enforces date scaling by years for the x-axis.}
+
+\item{datetime_x}{logical. If TRUE, enforces datetime scaling by years for the x-axis.}
 
 \item{n_breaks}{integer. Approximate number of breaks to generate for axes.}
 }
