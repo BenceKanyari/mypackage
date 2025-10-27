@@ -157,6 +157,8 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                     plot.margin = unit(c(.5, 1.5, .5, .5), "lines"),
                     panel.spacing.x = unit(40, "pt"),
                     panel.spacing.y = unit(20, "pt"),
+                    legend.position = "top",
+                    legend.direction = "horizontal",
                 ) +
                 scale_y_discrete(expand = expansion(add = .5)) +
                 ggh4x::facetted_pos_scales(x = scales)
@@ -230,8 +232,12 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             }
 
             plot_out <- plot +
+                ggh4x::facetted_pos_scales(y = scales) +
                 base_theme +
-                ggh4x::facetted_pos_scales(y = scales)
+                theme(
+                    legend.position = "top",
+                    legend.direction = "horizontal",
+                )
 
         }else{
             y_range <- plot0$layout$panel_params[[1]]$y.range
@@ -309,7 +315,11 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                     theme(
                         axis.title = element_text(size = 12, face = "bold")
                     ) +
-                    ggh4x::facetted_pos_scales(x = scales)
+                    ggh4x::facetted_pos_scales(x = scales)  +
+                    theme(
+                        legend.position = "top",
+                        legend.direction = "horizontal",
+                    )
 
             }else{
                 x_range <- plot0$layout$panel_params[[1]]$x.range
