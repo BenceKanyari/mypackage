@@ -19,8 +19,8 @@
 
 set_breaks <- function(values, breaks = TRUE, top_ratio = 1, seq_length = NULL, max_n_breaks = 12) {
 
-    min_n <- min(values, na.rm = TRUE)/1.002
-    max_n <- max(values, na.rm = TRUE)*1.002
+    min_n <- min(values, na.rm = TRUE)/1.002 - 0.02
+    max_n <- max(values, na.rm = TRUE)*1.002 + 0.02
 
     max_n <- min_n + (max_n - min_n) * top_ratio
 
