@@ -23,11 +23,11 @@
 #' @export
 my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
                      zero_x_min = NULL, cont_x = FALSE, date_x = FALSE, datetime_x = FALSE,
-                     n_breaks = 12) {
+                     n_breaks = 12, sec_y_axis = NULL, seq_y_length = NULL) {
     structure(list(top_ratio = top_ratio, autoscale = autoscale,
                    zero_y_min = zero_y_min, zero_x_min = zero_x_min,
                    cont_x = cont_x, date_x = date_x, datetime_x = datetime_x,
-                   n_breaks = n_breaks),
+                   n_breaks = n_breaks, sec_y_axis = sec_y_axis, seq_y_length = seq_y_length),
               class = "my_theme")
 }
 
@@ -69,6 +69,20 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
     date_x <- object$date_x
     datetime_x <- object$datetime_x
     n_breaks <- object$n_breaks
+    sec_y_axis <- object$sec_y_axis
+    seq_y_length <- object$seq_y_length
+
+    if (is.null(sec_y_axis)) {
+        sec_y_axis <- sec_y_axis <- function(orig_breaks = breaks_y) {
+            dup_axis()
+        }
+    }else{
+
+        formula <- sec_y_axis
+        sec_y_axis <- function(orig_breaks = breaks_y) {
+            sec_axis(formula, breaks = with(list(. = orig_breaks), eval(formula[[2]])))
+        }
+    }
 
     # Base theme (always applied)
     base_theme <- ggthemes::theme_calc() +
@@ -220,19 +234,21 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             for (i in seq_len(n_panels)) {
                 yr <- plot0$layout$panel_params[[i]]$y.range
 
+                breaks_y <- set_breaks(yr, breaks = TRUE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)
+
                 if (zero_y_min & min(yr) >= 0) {
                     scales[[i]] <- scale_y_continuous(
-                        limits = c(0,set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
-                        breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = c(0,set_breaks(yr, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)[2]),
+                        breaks = breaks_y,
                         expand = c(0, 0),
-                        sec.axis = dup_axis()
+                        sec.axis = sec_y_axis(breaks_y)
                     )
                 } else{
                     scales[[i]] <- scale_y_continuous(
-                        limits = set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks),
-                        breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = set_breaks(yr, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks),
+                        breaks = breaks_y,
                         expand = c(0, 0),
-                        sec.axis = dup_axis()
+                        sec.axis = sec_y_axis(breaks_y)
                     )
                 }
             }
@@ -250,18 +266,18 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
             if (zero_y_min & min(y_range) >= 0) {
                 limits_y <- c(0,set_breaks(y_range, breaks = FALSE,
-                                           top_ratio = top_ratio, max_n_breaks = n_breaks)[2])
+                                           top_ratio = top_ratio, seq_length = seq_y_length, max_n_breaks = n_breaks)[2])
             }else{
                 limits_y <- set_breaks(y_range, breaks = FALSE,
-                                       top_ratio = top_ratio, max_n_breaks = n_breaks)
+                                       top_ratio = top_ratio, seq_length = seq_y_length, max_n_breaks = n_breaks)
             }
 
-            breaks_y <- set_breaks(y_range, top_ratio = top_ratio, max_n_breaks = n_breaks)
+            breaks_y <- set_breaks(y_range, top_ratio = top_ratio, seq_length = seq_y_length, max_n_breaks = n_breaks)
 
             plot_out <- plot +
                 base_theme +
                 scale_y_continuous(
-                    sec.axis = dup_axis(),
+                    sec.axis = sec_y_axis(breaks_y),
                     limits = limits_y,
                     breaks = breaks_y,
                     expand = expansion(mult = c(0, 0))
