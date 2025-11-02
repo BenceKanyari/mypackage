@@ -318,7 +318,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                             limits = c(0,set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
                             breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
                             expand = c(0, 0),
-                            sec.axis = dup_axis()
+                            # sec.axis = dup_axis()
                         )
                     }
                 }else{
