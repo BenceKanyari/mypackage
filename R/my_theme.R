@@ -76,6 +76,10 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         sec_y_axis <- sec_y_axis <- function(orig_breaks = breaks_y) {
             dup_axis()
         }
+    }else if(sec_y_axis == FALSE){
+        sec_y_axis <- sec_y_axis <- function(orig_breaks = breaks_y) {
+            ggplot2::waiver()
+        }
     }else{
 
         formula <- sec_y_axis
