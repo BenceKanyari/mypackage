@@ -119,7 +119,6 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             legend.box = "horizontal",
             legend.background = element_rect(fill = NA, colour = NA),
             legend.box.margin = unit(c(0, 1, -.5, 1), "lines"),
-            legend.justification = "left",
             legend.text = element_text(size = 12),
             legend.title = element_blank(),
             strip.background = element_blank(),
