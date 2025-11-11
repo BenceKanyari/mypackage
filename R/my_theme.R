@@ -191,7 +191,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         }else{
             x_range <- plot0$layout$panel_params[[1]]$x.range
 
-            if (zero_x_min & min(x_range) >= 0) {
+            if (zero_x_min & (min(x_range) >= 0 | max(x_range) <= 0)) {
                 limits_x <- c(0,set_breaks(x_range, breaks = FALSE,
                                            top_ratio = top_ratio, max_n_breaks = n_breaks)[2])
             }else{
@@ -241,7 +241,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
                 breaks_y <- set_breaks(yr, breaks = TRUE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)
 
-                if (zero_y_min & min(yr) >= 0) {
+                if (zero_y_min & (min(yr) >= 0 | max(yr) <= 0)) {
                     scales[[i]] <- scale_y_continuous(
                         limits = c(0,set_breaks(yr, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)[2]),
                         breaks = breaks_y,
@@ -269,7 +269,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
         }else{
             y_range <- plot0$layout$panel_params[[1]]$y.range
 
-            if (zero_y_min & min(y_range) >= 0) {
+            if (zero_y_min & (min(y_range) >= 0 | max(y_range) <= 0)) {
                 limits_y <- c(0,set_breaks(y_range, breaks = FALSE,
                                            top_ratio = top_ratio, seq_length = seq_y_length, max_n_breaks = n_breaks)[2])
             }else{
@@ -316,27 +316,26 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 scales <- vector("list", n_panels)
 
 
-                if (zero_x_min) {
-                    for (i in seq_len(n_panels)) {
-                        yr <- plot0$layout$panel_params[[i]]$x.range
+                for (i in seq_len(n_panels)) {
+                    xr <- plot0$layout$panel_params[[i]]$x.range
+
+                    breaks_x <- set_breaks(xr, breaks = TRUE, max_n_breaks = max_n_breaks)
+
+                    if (zero_x_min & (min(xr) >= 0 | max(xr) <= 0)) {
                         scales[[i]] <- scale_x_continuous(
-                            limits = c(0,set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
-                            breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
-                            expand = c(0, 0),
-                            # sec.axis = dup_axis()
+                            limits = c(0,set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
+                            breaks = breaks_x,
+                            expand = c(0, 0)
                         )
-                    }
-                }else{
-                    for (i in seq_len(n_panels)) {
-                        yr <- plot0$layout$panel_params[[i]]$x.range
+                    } else{
                         scales[[i]] <- scale_x_continuous(
-                            limits = set_breaks(yr, breaks = FALSE, max_n_breaks = max_n_breaks),
-                            breaks = set_breaks(yr, breaks = TRUE, max_n_breaks = max_n_breaks),
-                            expand = c(0, 0),
-                            # sec.axis = dup_axis()
+                            limits = set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks),
+                            breaks = breaks_x,
+                            expand = c(0, 0)
                         )
                     }
                 }
+
 
                 plot_out <- plot_out +
                     theme(
@@ -351,7 +350,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             }else{
                 x_range <- plot0$layout$panel_params[[1]]$x.range
 
-                if (zero_x_min) {
+                if (zero_x_min & (min(x_range) >= 0 | max(x_range) <= 0)) {
                     limits_x <- c(0,set_breaks(x_range, breaks = FALSE,
                                                top_ratio = top_ratio, max_n_breaks = n_breaks)[2])
                 }else{
@@ -366,7 +365,6 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                         axis.title = element_text(size = 12, face = "bold")
                     ) +
                     scale_x_continuous(
-                        # sec.axis = dup_axis(),
                         limits = limits_x,
                         breaks = breaks_x,
                         expand = expansion(mult = c(0, 0))
