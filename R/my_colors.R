@@ -22,9 +22,10 @@
 my_colors <- function(x = 1:12, palette = "default") {
 
     if (palette == "default") {
-        mycolors <- c("#E22222", "#550F13FF", "#A10000", "grey55", "#C0C0C0", "#3D5481",
-                      "#A3C1E1", "#303030", "#F28E8E", "grey35", "#30633E", "#92BB73",
-                      "#469059", "#CAD589", "#A23F3B", "#D6D7DB")
+        mycolors <- c("#E22222", "#550F13FF", "#A10000", "grey55", "#C0C0C0",
+                      "#3D5481",  "#A3C1E1", "#303030", "#F28E8E", "grey35",
+                      "#30633E", "#92BB73","#469059", "#CAD589", "#A23F3B", "#D6D7DB",
+                      "#6363F4", "#9696F8", "#A9A9A9", "#F19B99", "#ED6E69", "#A869AF")
     } else if (palette == "distinct") {
         mycolors <- c(
             "#EE0011FF", "#0C1BB9FF", "#A1C720FF", "#FFD320FF", "#AA1AE8", "#FF950EFF",
