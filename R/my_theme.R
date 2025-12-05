@@ -125,7 +125,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             strip.placement = "outside",
             strip.text = element_text(color = "black", size = 14, face = "bold"),
             plot.title = element_text(hjust = .5, face = "bold", size = 16,  margin = margin(1, 1, 12, 1, "pt")),
-            plot.subtitle = element_text(size = 14, hjust = .5, margin = margin(-13, 3, 12, 3, "pt")),
+            plot.subtitle = element_text(size = 14, hjust = .5, margin = margin(-9, 3, 12, 3, "pt")),
             plot.caption = element_text(hjust = 0, size = 8),
             plot.caption.position = "plot",
             plot.title.position = "plot"
