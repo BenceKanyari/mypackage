@@ -373,7 +373,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
         }else if(date_x){
 
-            plot0 <- ggplot2::ggplot_build(plot + scale_x_date(expand = c(0,0)))
+            plot0 <- ggplot2::ggplot_build(plot)
 
             x_time <- unique(unlist(lapply(plot0$data, function(d) d$x)))
 
