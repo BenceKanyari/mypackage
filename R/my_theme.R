@@ -426,7 +426,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 x_labels <- format(x_breaks, "%d %b")
             } else if (by %in% c("1 month", "2 months")) {
                 x_labels <- format(x_breaks, "%b %y")
-            } else if (by %in% c("3 months", "6 months") & freq == "monthly") {
+            } else if (by %in% c("3 months", "6 months") & freq_n <= 4) {
                 x_labels <- format(x_breaks, "%b %y")
             } else if (by %in% c("3 months", "6 months") & freq == "quarterly") {
                 x_labels <- paste0(format(x_breaks, "%y"), "Q", ceiling(as.numeric(format(x_breaks, "%m")) / 3))
@@ -498,7 +498,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 x_labels <- format(x_breaks, "%d %b")
             } else if (by %in% c("1 month", "2 months")) {
                 x_labels <- format(x_breaks, "%b %y")
-            } else if (by %in% c("3 months", "6 months") & freq == "monthly") {
+            } else if (by %in% c("3 months", "6 months") & freq_n <= 4) {
                 x_labels <- format(x_breaks, "%b %y")
             } else if (by %in% c("3 months", "6 months") & freq == "quarterly") {
                 x_labels <- paste0(format(x_breaks, "%y"), "Q", ceiling(as.numeric(format(x_breaks, "%m")) / 3))
