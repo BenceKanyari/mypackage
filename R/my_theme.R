@@ -121,6 +121,7 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             legend.box.margin = unit(c(0, 1, -.5, 1), "lines"),
             legend.text = element_text(size = 12),
             legend.title = element_blank(),
+            legend.key = element_rect(fill = NA),
             strip.background = element_blank(),
             strip.placement = "outside",
             strip.text = element_text(color = "black", size = 14, face = "bold"),
