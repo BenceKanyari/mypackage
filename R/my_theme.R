@@ -162,15 +162,15 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
 
                 if (zero_x_min & min(xr) >= 0) {
                     scales[[i]] <- scale_x_continuous(
-                        limits = c(0,set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
-                        breaks = set_breaks(xr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = c(0,set_breaks(xr, top_ratio = top_ratio, breaks = FALSE, max_n_breaks = max_n_breaks)[2]),
+                        breaks = set_breaks(xr, top_ratio = top_ratio, breaks = TRUE, max_n_breaks = max_n_breaks),
                         expand = c(0, 0),
                         sec.axis = dup_axis()
                     )
                 } else{
                     scales[[i]] <- scale_x_continuous(
-                        limits = set_breaks(xr, breaks = FALSE, max_n_breaks = max_n_breaks),
-                        breaks = set_breaks(xr, breaks = TRUE, max_n_breaks = max_n_breaks),
+                        limits = set_breaks(xr, top_ratio = top_ratio, breaks = FALSE, max_n_breaks = max_n_breaks),
+                        breaks = set_breaks(xr, top_ratio = top_ratio, breaks = TRUE, max_n_breaks = max_n_breaks),
                         expand = c(0, 0),
                         sec.axis = dup_axis()
                     )
@@ -240,18 +240,18 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
             for (i in seq_len(n_panels)) {
                 yr <- plot0$layout$panel_params[[i]]$y.range
 
-                breaks_y <- set_breaks(yr, breaks = TRUE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)
+                breaks_y <- set_breaks(yr, top_ratio = top_ratio, breaks = TRUE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)
 
                 if (zero_y_min & (min(yr) >= 0 | max(yr) <= 0)) {
                     scales[[i]] <- scale_y_continuous(
-                        limits = c(0,set_breaks(yr, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)[2]),
+                        limits = c(0,set_breaks(yr, top_ratio = top_ratio, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks)[2]),
                         breaks = breaks_y,
                         expand = c(0, 0),
                         sec.axis = sec_y_axis(breaks_y)
                     )
                 } else{
                     scales[[i]] <- scale_y_continuous(
-                        limits = set_breaks(yr, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks),
+                        limits = set_breaks(yr, top_ratio = top_ratio, breaks = FALSE, seq_length = seq_y_length, max_n_breaks = max_n_breaks),
                         breaks = breaks_y,
                         expand = c(0, 0),
                         sec.axis = sec_y_axis(breaks_y)
