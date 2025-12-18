@@ -36,7 +36,7 @@ my_theme <- function(top_ratio = 1, autoscale = TRUE, zero_y_min = FALSE,
     items <- sort(unique(x)) |>
         head(20) # should be enough, but many tests
 
-    Ds <- base::diff(items) # Time differences in days
+    Ds <- min(base::diff(items)) # Time differences in days
 
     recognised_freq <- dplyr::case_when(
         all(Ds > 0 & Ds <= 4) ~ "daily",
@@ -409,13 +409,14 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 years_covered < .18 & freq_n <= 2 ~ "1 week",
                 years_covered < .67 & freq_n <= 4 ~ "1 month",
                 years_covered < 1.34 & freq_n <= 5 ~ "2 months",
-                years_covered < 2 & freq_n <= 6 & freq != 5 ~ "3 months",
+                years_covered < 2 & freq_n <= 6 & freq_n != 5 ~ "3 months",
                 freq_n <= 7 ~ "6 months",
             )
 
 
             # Compute breaks
-            x_breaks <- seq(from = as.Date(max(x_time)), to = as.Date(min(x_time)), by = paste0("-",by))
+            from <- ifelse(years_covered < 0.18, max(x_time), lubridate::floor_date(max(x_time), "month"))
+            x_breaks <- seq(from = as.Date(from), to = as.Date(min(x_time)), by = paste0("-", by))
 
             # Avoid too fine breaks for coarser frequencies
             if (str_detect(by, "year")) {
@@ -481,13 +482,14 @@ ggplot_add.my_theme <- function(object, plot, object_name) {
                 years_covered < .18 & freq_n <= 2 ~ "1 week",
                 years_covered < .67 & freq_n <= 4 ~ "1 month",
                 years_covered < 1.34 & freq_n <= 5 ~ "2 months",
-                years_covered < 2 & freq_n <= 6 & freq != 5 ~ "3 months",
+                years_covered < 2 & freq_n <= 6 & freq_n != 5 ~ "3 months",
                 freq_n <= 7 ~ "6 months",
             )
 
 
             # Compute breaks
-            x_breaks <- seq(from = as.Date(max(x_time)), to = as.Date(min(x_time)), by = paste0("-",by))
+            from <- ifelse(years_covered < 0.18, max(x_time), lubridate::floor_date(max(x_time), "month"))
+            x_breaks <- seq(from = as.Date(from), to = as.Date(min(x_time)), by = paste0("-", by))
 
             # Avoid too fine breaks for coarser frequencies
             if (str_detect(by, "year")) {
