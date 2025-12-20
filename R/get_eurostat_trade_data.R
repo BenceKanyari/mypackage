@@ -46,14 +46,15 @@
 
 get_eurostat_trade_data <- function(
         freq = "M",
-        reporter = c("EU27_2020"),
+        reporter = "EU27_2020",
         partner = NULL,
         product = "TOTAL",
         flow = 1,
         indicators = "VALUE_IN_EUROS",
         transport_mode = NULL,
         start_period = 2023,
-        by_year = FALSE
+        by_year = FALSE,
+        cpa = FALSE
 ) {
 
 
@@ -66,6 +67,23 @@ get_eurostat_trade_data <- function(
 
     if (!is.null(transport_mode)) {
         dataset_id <- "ds-059334"
+    } else if(cpa){
+        dataset_id <- "ds-059366"
+
+        if (is.null(partner)) {
+            partner <- c(
+                "EXT_EU27_2020","INT_EU27_2020","WORLD"
+            )
+        } else if("ALL" %in% partner){
+            partner <- NULL
+        }
+
+
+        if(indicators == "VALUE_IN_EUROS"){
+            indicators <- "VALUE_EUR"
+        }
+
+
     }
 
 
