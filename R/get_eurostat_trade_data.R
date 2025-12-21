@@ -67,9 +67,19 @@ get_eurostat_trade_data <- function(
 
     if (!is.null(transport_mode)) {
         dataset_id <- "ds-059334"
+
+        # --- 1. Default partner list if none provided ---
+        if (is.null(partner)) {
+            partner <- c(
+                "EU27_2020_EXTRA","EU27_2020_INTRA","WORLD"
+            )
+        } else if("ALL" %in% partner){
+            partner <- NULL
+        }
     } else if(cpa){
         dataset_id <- "ds-059366"
 
+        # --- 1. Default partner list if none provided ---
         if (is.null(partner)) {
             partner <- c(
                 "EXT_EU27_2020","INT_EU27_2020","WORLD"
@@ -82,19 +92,19 @@ get_eurostat_trade_data <- function(
         if("VALUE_IN_EUROS" %in% indicators & length(indicators) == 1){
             indicators <- "VALUE_EUR"
         }
-
-
+    }else{
+        # --- 1. Default partner list if none provided ---
+        if (is.null(partner)) {
+            partner <- c(
+                "EU27_2020_EXTRA","EU27_2020_INTRA","WORLD"
+            )
+        } else if("ALL" %in% partner){
+            partner <- NULL
+        }
     }
 
 
-    # --- 1. Default partner list if none provided ---
-    if (is.null(partner)) {
-        partner <- c(
-            "EU27_2020_EXTRA","EU27_2020_INTRA","WORLD"
-        )
-    } else if("ALL" %in% partner){
-        partner <- NULL
-    }
+
 
     # --- 2. Generate TIME_PERIOD sequence ---
     if (freq == "A") {
