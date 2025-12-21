@@ -79,7 +79,7 @@ get_eurostat_trade_data <- function(
         }
 
 
-        if(indicators == "VALUE_IN_EUROS"){
+        if("VALUE_IN_EUROS" %in% indicators & length(indicators) == 1){
             indicators <- "VALUE_EUR"
         }
 
